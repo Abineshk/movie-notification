@@ -1,10 +1,14 @@
 import React from "react";
 import "./styles.css";
-
-export default function App() {
+import "bootstrap/dist/css/bootstrap.min.css";
+import Header from "./container/Header";
+import Footer from "./container/Footer";
+export default function App(props) {
   return (
     <div className="App">
-      Hello world
+      <Header />
+      {props.children}
+      <Footer />
     </div>
   );
 }
