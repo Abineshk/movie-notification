@@ -1,36 +1,54 @@
 import React from "react";
-import { Row, Col, Button, Form } from "react-bootstrap";
-export default function Login() {
-  return (
-    <Form>
-      <Form.Group as={Row} controlId="formHorizontalEmail">
-        <Form.Label column sm={2}>
-          Email
-        </Form.Label>
-        <Col sm={10}>
-          <Form.Control type="email" placeholder="Email" />
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} controlId="formHorizontalPassword">
-        <Form.Label column sm={2}>
-          Password
-        </Form.Label>
-        <Col sm={10}>
-          <Form.Control type="password" placeholder="Password" />
-        </Col>
-      </Form.Group>
-      <Form.Group as={Row} controlId="formHorizontalCheck">
-        <Col sm={{ span: 10, offset: 2 }}>
-          <Form.Check label="Remember me" />
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row}>
-        <Col sm={{ span: 10, offset: 2 }}>
-          <Button type="submit">Sign in</Button>
-        </Col>
-      </Form.Group>
-    </Form>
-  );
+import { Row } from "react-bootstrap";
+import fire from '../firebase'
+import { browserHistory } from 'react-router'
+export default class Login extends React.Component {
+  constructor(props){
+    super(props);
+    this.state={
+      email:'',
+      password:''
+    }
+  }
+  componentDidMount(){
+    fire.auth().signOut().then(function() {
+      // Sign-out successful.
+    }).catch(function(error) {
+      // An error happened.
+    });
+  }
+  onLogin(e) {
+    e.preventDefault()
+    fire.auth().signInWithEmailAndPassword(this.state.email,this.state.password).then((user)=>{
+      document.getElementById('form').reset()
+      browserHistory.push("/dashboard")
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }
+  onChangePassword(e){
+    this.setState({email:e.target.value})
+  }
+  onChangeUsername(e){
+    this.setState({password:e.target.value})
+  }
+  render() {
+    return (
+      <form id="form">
+        <Row>Email</Row>
+        <Row>
+          <input type="email" className="input-email" placeholder="enter email address" onChange={this.onChangeUsername.bind(this)} required />
+        </Row>
+        <Row>Password</Row>
+        <Row>
+          <input type="password" className="input-password" placeholder="enter password" onChange={this.onChangePassword.bind(this)} required />
+        </Row>
+        <Row>
+          <button className="button" onClick={this.onLogin.bind(this)}>
+            Submit
+          </button>
+        </Row>
+      </form>
+    );
+  }
 }
